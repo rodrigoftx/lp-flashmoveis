@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import { supabase } from '../lib/supabaseClient.js'
 import { formatarPreco } from '../lib/utils.js'
+import { registrarTentativaFalha } from '../lib/logs.js'
 import ModalProduto from './ModalProduto.jsx'
 import LogAtividades from './LogAtividades.jsx'
 
@@ -38,7 +39,10 @@ export default function Admin({ produtos, acoes }) {
     setEntrando(true)
     setErro('')
     const { error } = await supabase.auth.signInWithPassword({ email, password: senha })
-    if (error) setErro('E-mail ou senha incorretos.')
+    if (error) {
+      setErro('E-mail ou senha incorretos.')
+      registrarTentativaFalha(email)
+    }
     setEntrando(false)
   }
 
