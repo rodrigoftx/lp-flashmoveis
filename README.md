@@ -36,7 +36,7 @@ Para mexer nas categorias e cores dos filtros, edite `src/data/produtos.js`.
 Clique em "Área do administrador" no topo. Na versão de teste:
 
 - Usuário: `admin`
-- Senha: a que estiver em `src/config.js` (padrão `1234`)
+- Senha: 
 
 Ali você adiciona, edita e exclui produtos, muda preços e liga/desliga o
 estoque. Nesta versão os dados ficam salvos no próprio navegador
