@@ -23,7 +23,11 @@ export default function CardProduto({ produto, onAbrir }) {
         <div className="card-nome">{produto.nome}</div>
         <div className="card-tags">
           <span className="tag">{produto.categoria}</span>
-          <span className="tag tag-cor">{produto.cor}</span>
+          {(produto.cores?.length ? produto.cores : [produto.cor]).filter(Boolean).map((c) => (
+            <span key={c} className="tag tag-cor">
+              {c}
+            </span>
+          ))}
         </div>
         <div className="card-preco">{formatarPreco(produto.preco)}</div>
         <div className={`card-estoque ${produto.estoque ? 'estoque-sim' : 'estoque-nao'}`}>

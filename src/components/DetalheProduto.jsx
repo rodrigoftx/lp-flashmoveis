@@ -47,7 +47,11 @@ export default function DetalheProduto({ produto, onFechar }) {
         <div className="card-tags detalhe-tags">
           <span className="tag">{produto.categoria}</span>
           {produto.subcategoria && <span className="tag">{produto.subcategoria}</span>}
-          <span className="tag tag-cor">{produto.cor}</span>
+          {(produto.cores?.length ? produto.cores : [produto.cor]).filter(Boolean).map((c) => (
+            <span key={c} className="tag tag-cor">
+              {c}
+            </span>
+          ))}
         </div>
 
         <div className="card-preco detalhe-preco">{formatarPreco(produto.preco)}</div>

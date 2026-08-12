@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import { CATEGORIAS, CORES } from '../data/produtos.js'
+import { CORES } from '../data/produtos.js'
 import { enviarImagemProduto } from '../lib/upload.js'
 
 const VAZIO = {
   nome: '',
-  categoria: CATEGORIAS[0].nome,
+  categoria: '',
   subcategoria: '',
-  cor: CORES[0],
+  cores: [],
   preco: '',
   estoque: true,
   emPromocao: false,
@@ -17,13 +17,23 @@ const VAZIO = {
   profundidade: '',
 }
 
-export default function ModalProduto({ produto, onSalvar, onFechar }) {
-  const [form, setForm] = useState(produto ? { ...VAZIO, ...produto } : VAZIO)
+export default function ModalProduto({ produto, categorias, onSalvar, onFechar }) {
+  const inicial = produto
+    ? { ...VAZIO, ...produto }
+    : { ...VAZIO, categoria: categorias[0]?.nome || '' }
+  const [form, setForm] = useState(inicial)
   const [enviando, setEnviando] = useState(false)
   const [erroUpload, setErroUpload] = useState('')
 
   function set(campo, valor) {
     setForm((f) => ({ ...f, [campo]: valor }))
+  }
+
+  function alternarCor(cor) {
+    setForm((f) => ({
+      ...f,
+      cores: f.cores.includes(cor) ? f.cores.filter((c) => c !== cor) : [...f.cores, cor],
+    }))
   }
 
   async function selecionarArquivos(e) {
@@ -66,7 +76,7 @@ export default function ModalProduto({ produto, onSalvar, onFechar }) {
     })
   }
 
-  const subs = CATEGORIAS.find((c) => c.nome === form.categoria)?.subs || []
+  const subs = categorias.find((c) => c.nome === form.categoria)?.subs || []
 
   return (
     <div className="modal-fundo" onClick={onFechar}>
@@ -80,15 +90,21 @@ export default function ModalProduto({ produto, onSalvar, onFechar }) {
 
         <div className="campo">
           <label>Categoria</label>
-          <select
-            value={form.categoria}
-            onChange={(e) => set('categoria', e.target.value)}
-            style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--cor-borda)', borderRadius: 'var(--raio)', fontSize: 14 }}
-          >
-            {CATEGORIAS.map((c) => (
-              <option key={c.nome}>{c.nome}</option>
-            ))}
-          </select>
+          {categorias.length === 0 ? (
+            <p className="vazio" style={{ padding: 0 }}>
+              Nenhuma categoria cadastrada. Feche este formulário e crie uma em "Categorias".
+            </p>
+          ) : (
+            <select
+              value={form.categoria}
+              onChange={(e) => setForm((f) => ({ ...f, categoria: e.target.value, subcategoria: '' }))}
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--cor-borda)', borderRadius: 'var(--raio)', fontSize: 14 }}
+            >
+              {categorias.map((c) => (
+                <option key={c.nome}>{c.nome}</option>
+              ))}
+            </select>
+          )}
         </div>
 
         <div className="campo">
@@ -106,16 +122,19 @@ export default function ModalProduto({ produto, onSalvar, onFechar }) {
         </div>
 
         <div className="campo">
-          <label>Cor</label>
-          <select
-            value={form.cor}
-            onChange={(e) => set('cor', e.target.value)}
-            style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--cor-borda)', borderRadius: 'var(--raio)', fontSize: 14 }}
-          >
+          <label>Cores (selecione uma ou mais)</label>
+          <div className="cores-selecao">
             {CORES.map((c) => (
-              <option key={c}>{c}</option>
+              <label key={c} className={`cor-opcao ${form.cores.includes(c) ? 'selecionada' : ''}`}>
+                <input
+                  type="checkbox"
+                  checked={form.cores.includes(c)}
+                  onChange={() => alternarCor(c)}
+                />
+                {c}
+              </label>
             ))}
-          </select>
+          </div>
         </div>
 
         <div className="campo">

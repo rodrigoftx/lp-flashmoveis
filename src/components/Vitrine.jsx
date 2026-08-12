@@ -25,7 +25,7 @@ export default function Vitrine({
     return produtos.filter((p) => {
       if (p.categoria !== categoriaFixa) return false
       if (subcategoriaFixa && p.subcategoria !== subcategoriaFixa) return false
-      if (cor && p.cor !== cor) return false
+      if (cor && !(p.cores?.length ? p.cores : [p.cor]).includes(cor)) return false
       if (soEstoque && !p.estoque) return false
       if (termo && !p.nome.toLowerCase().includes(termo)) return false
       return true

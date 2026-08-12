@@ -13,11 +13,13 @@ import {
   alternarEstoque,
   alternarPromocao,
 } from './lib/store.js'
+import { listarCategorias } from './lib/categorias.js'
 
 export default function App() {
   const [pagina, setPagina] = useState('loja') // 'loja' | 'admin'
   const [busca, setBusca] = useState('')
   const [produtos, setProdutos] = useState([])
+  const [categorias, setCategorias] = useState([])
   const [categoriaAtiva, setCategoriaAtiva] = useState(null)
   const [subcategoriaAtiva, setSubcategoriaAtiva] = useState(null)
 
@@ -35,9 +37,14 @@ export default function App() {
     setProdutos(lista)
   }
 
-  // Carrega os produtos ao iniciar
+  async function recarregarCategorias() {
+    const lista = await listarCategorias()
+    setCategorias(lista)
+  }
+
+  // Carrega os produtos e categorias ao iniciar
   useEffect(() => {
-    recarregar().finally(() => setCarregando(false))
+    Promise.all([recarregar(), recarregarCategorias()]).finally(() => setCarregando(false))
   }, [])
 
   const acoes = {
@@ -69,7 +76,11 @@ export default function App() {
 
       {pagina === 'loja' ? (
         <>
-          <CategoriaNav categoriaAtiva={categoriaAtiva} onSelecionar={selecionarCategoria} />
+          <CategoriaNav
+            categorias={categorias}
+            categoriaAtiva={categoriaAtiva}
+            onSelecionar={selecionarCategoria}
+          />
           {!categoriaAtiva && <BannerHero />}
           {carregando ? (
             <p className="vazio container">Carregando produtos...</p>
@@ -85,7 +96,12 @@ export default function App() {
           )}
         </>
       ) : (
-        <Admin produtos={produtos} acoes={acoes} />
+        <Admin
+          produtos={produtos}
+          acoes={acoes}
+          categorias={categorias}
+          onAtualizarCategorias={recarregarCategorias}
+        />
       )}
 
       <Footer />

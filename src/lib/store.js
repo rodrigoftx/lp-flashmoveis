@@ -17,12 +17,14 @@ let produtos = []
 // Converte uma linha do banco (snake_case) para o formato usado no site
 function daLinha(linha) {
   const imagens = linha.imagens && linha.imagens.length ? linha.imagens : linha.imagem ? [linha.imagem] : []
+  const cores = linha.cores && linha.cores.length ? linha.cores : linha.cor ? [linha.cor] : []
   return {
     id: linha.id,
     nome: linha.nome,
     categoria: linha.categoria,
     subcategoria: linha.subcategoria || '',
-    cor: linha.cor || '',
+    cores,
+    cor: cores[0] || '', // mantida por compatibilidade (tag principal, etc.)
     preco: Number(linha.preco),
     estoque: linha.estoque,
     emPromocao: linha.em_promocao,
@@ -38,11 +40,13 @@ function daLinha(linha) {
 // Converte os dados do formulário do site para o formato da tabela
 function paraLinha(dados) {
   const imagens = dados.imagens || []
+  const cores = dados.cores || []
   return {
     nome: dados.nome,
     categoria: dados.categoria,
     subcategoria: dados.subcategoria || null,
-    cor: dados.cor || null,
+    cores,
+    cor: cores[0] || null, // mantida por compatibilidade (tag principal, etc.)
     preco: dados.preco,
     estoque: dados.estoque,
     em_promocao: dados.emPromocao,

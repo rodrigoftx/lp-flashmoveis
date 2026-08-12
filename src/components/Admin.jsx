@@ -4,8 +4,9 @@ import { formatarPreco } from '../lib/utils.js'
 import { registrarTentativaFalha } from '../lib/logs.js'
 import ModalProduto from './ModalProduto.jsx'
 import LogAtividades from './LogAtividades.jsx'
+import GerenciarCategorias from './GerenciarCategorias.jsx'
 
-export default function Admin({ produtos, acoes }) {
+export default function Admin({ produtos, acoes, categorias, onAtualizarCategorias }) {
   const [sessao, setSessao] = useState(undefined) // undefined = verificando | null = deslogado | objeto = logado
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
@@ -14,6 +15,7 @@ export default function Admin({ produtos, acoes }) {
   const [modal, setModal] = useState(null) // null | 'novo' | produto
   const [busca, setBusca] = useState('')
   const [mostrarLog, setMostrarLog] = useState(false)
+  const [mostrarCategorias, setMostrarCategorias] = useState(false)
 
   // Verifica se já existe uma sessão ativa e escuta mudanças de login/logout
   useEffect(() => {
@@ -31,7 +33,7 @@ export default function Admin({ produtos, acoes }) {
       (p) =>
         p.nome.toLowerCase().includes(termo) ||
         p.categoria.toLowerCase().includes(termo) ||
-        p.cor.toLowerCase().includes(termo)
+        (p.cores || []).some((c) => c.toLowerCase().includes(termo))
     )
   }, [produtos, busca])
 
@@ -110,9 +112,12 @@ export default function Admin({ produtos, acoes }) {
       <div className="container">
         <div className="admin-topo">
           <h2>Gerenciar produtos ({produtos.length})</h2>
-          <div style={{ display: 'flex', gap: 10 }}>
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
             <button className="btn-novo" onClick={() => setModal('novo')}>
               + Novo produto
+            </button>
+            <button className="btn-icone" onClick={() => setMostrarCategorias(true)}>
+              Categorias
             </button>
             <button className="btn-icone" onClick={() => setMostrarLog(true)}>
               Histórico
@@ -139,7 +144,7 @@ export default function Admin({ produtos, acoes }) {
               <div className="linha-info">
                 <div className="nome">{p.nome}</div>
                 <div className="meta">
-                  {p.categoria} · {p.cor} · {formatarPreco(p.preco)}
+                  {p.categoria} · {(p.cores || []).join(', ') || '—'} · {formatarPreco(p.preco)}
                 </div>
               </div>
               <button
@@ -175,12 +180,21 @@ export default function Admin({ produtos, acoes }) {
       {modal && (
         <ModalProduto
           produto={modal === 'novo' ? null : modal}
+          categorias={categorias}
           onSalvar={salvar}
           onFechar={() => setModal(null)}
         />
       )}
 
       {mostrarLog && <LogAtividades onFechar={() => setMostrarLog(false)} />}
+
+      {mostrarCategorias && (
+        <GerenciarCategorias
+          categorias={categorias}
+          onAtualizar={onAtualizarCategorias}
+          onFechar={() => setMostrarCategorias(false)}
+        />
+      )}
     </div>
   )
 }

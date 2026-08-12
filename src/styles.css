@@ -728,6 +728,61 @@ img {
   flex-direction: column;
   gap: 10px;
 }
+.cores-selecao {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.cor-opcao {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--cor-borda);
+  font-size: 13px;
+  cursor: pointer;
+  transition: var(--transicao);
+}
+.cor-opcao input {
+  accent-color: var(--cor-primaria);
+}
+.cor-opcao.selecionada {
+  background: var(--cor-primaria);
+  border-color: var(--cor-primaria);
+  color: var(--cor-branco);
+}
+.sub-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.sub-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 4px 4px 10px;
+  border-radius: 999px;
+  background: var(--cor-fundo);
+  border: 1px solid var(--cor-borda);
+  font-size: 12px;
+  color: var(--cor-texto);
+}
+.sub-tag button {
+  background: none;
+  border: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  color: var(--cor-texto-suave);
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+}
+.sub-tag button:hover {
+  background: var(--cor-perigo);
+  color: var(--cor-branco);
+}
 .upload-grade {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));

@@ -1,6 +1,4 @@
-import { CATEGORIAS } from '../data/produtos.js'
-
-export default function CategoriaNav({ categoriaAtiva, onSelecionar }) {
+export default function CategoriaNav({ categorias, categoriaAtiva, onSelecionar }) {
   return (
     <nav className="categoria-nav">
       <div className="container categoria-nav-inner">
@@ -11,7 +9,7 @@ export default function CategoriaNav({ categoriaAtiva, onSelecionar }) {
           🔥 Promoções
         </button>
 
-        {CATEGORIAS.map((c) => (
+        {categorias.map((c) => (
           <div key={c.nome} className="categoria-dropdown">
             <button
               className={`categoria-link ${categoriaAtiva === c.nome ? 'ativo' : ''}`}
